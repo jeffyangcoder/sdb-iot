@@ -24,7 +24,7 @@ export default {
   menu: {
     locale: true
   },
-  title: '云仓库管理系统',
+  title: '物联网管理系统',
   pwa: false,
   iconfontUrl: '',
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true',

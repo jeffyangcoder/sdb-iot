@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="sdb-scm" />
+        <module name="sdb-iot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="sdb-scm" target="1.8" />
+      <module name="sdb-iot" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

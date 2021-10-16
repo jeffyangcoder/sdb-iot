@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/sdb-scm.iml" filepath="$PROJECT_DIR$/sdb-scm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sdb-iot.iml" filepath="$PROJECT_DIR$/sdb-iot.iml" />
     </modules>
   </component>
 </project>

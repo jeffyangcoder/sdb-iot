@@ -5,7 +5,7 @@
       <a href="https://github" target="_blank">Github</a>
     </template>
     <template v-slot:copyright>
-      <a href="https://www.baidu.com" target="_blank">SDB-SCM</a>
+      <a href="https://www.baidu.com" target="_blank">SDB-IOT</a>
     </template>
   </global-footer>
 </template>

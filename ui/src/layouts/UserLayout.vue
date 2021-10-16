@@ -5,8 +5,8 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.png" class="logo" alt="logo">
-<!--            <span class="title">SDB-SCM</span>-->
-            <span class="title">云仓库管理系统</span>
+<!--            <span class="title">sdb-iot</span>-->
+            <span class="title">物联网管理系统</span>
           </a>
         </div>
 <!--        <div class="desc">-->
@@ -26,7 +26,7 @@
           <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">条款</a>
         </div>
         <div class="copyright">
-<!--          Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">SDB-SCM</a>-->
+<!--          Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">sdb-iot</a>-->
           Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">云仓库管理</a>
         </div>
       </div>
