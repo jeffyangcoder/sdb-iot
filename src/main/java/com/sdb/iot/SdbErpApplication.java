@@ -1,4 +1,4 @@
-package com.sdb;
+package com.sdb.iot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
