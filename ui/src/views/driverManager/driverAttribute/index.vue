@@ -181,7 +181,7 @@ export default {
           scopedSlots: { customRender: 'modifyTime' },
           ellipsis: true,
           align: 'center'
-        },
+        }
         // {
         //   title: '操作',
         //   dataIndex: 'operation',
