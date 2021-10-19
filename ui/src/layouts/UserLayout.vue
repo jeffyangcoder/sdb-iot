@@ -13,7 +13,7 @@
 <!--          基于SDB开发平台应用之供应链-->
 <!--        </div>-->
         <div class="desc">
-          基于javaweb的云应用
+          基于SpringBoot，Spring Security，JWT，Vue的云应用
         </div>
       </div>
 
