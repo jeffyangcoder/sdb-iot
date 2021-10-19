@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdb.iot.profileManager.mapper.sdbIotProfileMapper">
+    
+    <resultMap type="sdbIotProfile" id="sdbIotProfileResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="share"    column="share"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="modifyTime"    column="modify_time"    />
+    </resultMap>
+
+    <sql id="selectsdbIotProfileVo">
+        select id, name, share, driver_id, description, create_time, modify_time from sdb_iot_profile
+    </sql>
+
+    <select id="selectsdbIotProfileList" parameterType="sdbIotProfile" resultMap="sdbIotProfileResult">
+        <include refid="selectsdbIotProfileVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="driverId != null "> and driver_id = #{driverId}</if>
+        </where>
+    </select>
+    
+    <select id="selectsdbIotProfileById" parameterType="Long" resultMap="sdbIotProfileResult">
+        <include refid="selectsdbIotProfileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertsdbIotProfile" parameterType="sdbIotProfile" useGeneratedKeys="true" keyProperty="id">
+        insert into sdb_iot_profile
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="share != null">share,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="modifyTime != null">modify_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="share != null">#{share},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="modifyTime != null">#{modifyTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatesdbIotProfile" parameterType="sdbIotProfile">
+        update sdb_iot_profile
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="share != null">share = #{share},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="modifyTime != null">modify_time = #{modifyTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletesdbIotProfileById" parameterType="Long">
+        delete from sdb_iot_profile where id = #{id}
+    </delete>
+
+    <delete id="deletesdbIotProfileByIds" parameterType="String">
+        delete from sdb_iot_profile where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
