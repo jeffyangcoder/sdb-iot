@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdb.iot.profileManager.mapper.sdbIotPointMapper">
+    
+    <resultMap type="sdbIotPoint" id="sdbIotPointResult">
+        <result property="id"    column="id"    />
+        <result property="profileId"    column="profile_id"    />
+        <result property="value"    column="value"    />
+        <result property="type"    column="type"    />
+        <result property="rw"    column="rw"    />
+        <result property="base"    column="base"    />
+        <result property="minimum"    column="minimum"    />
+        <result property="maximum"    column="maximum"    />
+        <result property="multiple"    column="multiple"    />
+        <result property="accrue"    column="accrue"    />
+        <result property="format"    column="format"    />
+        <result property="unit"    column="unit"    />
+        <result property="modifyTime"    column="modify_time"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectsdbIotPointVo">
+        select id, profile_id, value, type, rw, base, minimum, maximum, multiple, accrue, format, unit, modify_time, create_time from sdb_iot_point
+    </sql>
+
+    <select id="selectsdbIotPointList" parameterType="sdbIotPoint" resultMap="sdbIotPointResult">
+        <include refid="selectsdbIotPointVo"/>
+        <where>  
+            <if test="profileId != null "> and profile_id = #{profileId}</if>
+            <if test="value != null  and value != ''"> and value = #{value}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="rw != null "> and rw = #{rw}</if>
+            <if test="accrue != null  and accrue != ''"> and accrue = #{accrue}</if>
+        </where>
+    </select>
+    
+    <select id="selectsdbIotPointById" parameterType="Long" resultMap="sdbIotPointResult">
+        <include refid="selectsdbIotPointVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertsdbIotPoint" parameterType="sdbIotPoint">
+        insert into sdb_iot_point
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="profileId != null">profile_id,</if>
+            <if test="value != null and value != ''">value,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="rw != null">rw,</if>
+            <if test="base != null">base,</if>
+            <if test="minimum != null">minimum,</if>
+            <if test="maximum != null">maximum,</if>
+            <if test="multiple != null">multiple,</if>
+            <if test="accrue != null and accrue != ''">accrue,</if>
+            <if test="format != null and format != ''">format,</if>
+            <if test="unit != null">unit,</if>
+            <if test="modifyTime != null">modify_time,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="profileId != null">#{profileId},</if>
+            <if test="value != null and value != ''">#{value},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="rw != null">#{rw},</if>
+            <if test="base != null">#{base},</if>
+            <if test="minimum != null">#{minimum},</if>
+            <if test="maximum != null">#{maximum},</if>
+            <if test="multiple != null">#{multiple},</if>
+            <if test="accrue != null and accrue != ''">#{accrue},</if>
+            <if test="format != null and format != ''">#{format},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="modifyTime != null">#{modifyTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatesdbIotPoint" parameterType="sdbIotPoint">
+        update sdb_iot_point
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="profileId != null">profile_id = #{profileId},</if>
+            <if test="value != null and value != ''">value = #{value},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="rw != null">rw = #{rw},</if>
+            <if test="base != null">base = #{base},</if>
+            <if test="minimum != null">minimum = #{minimum},</if>
+            <if test="maximum != null">maximum = #{maximum},</if>
+            <if test="multiple != null">multiple = #{multiple},</if>
+            <if test="accrue != null and accrue != ''">accrue = #{accrue},</if>
+            <if test="format != null and format != ''">format = #{format},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="modifyTime != null">modify_time = #{modifyTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletesdbIotPointById" parameterType="Long">
+        delete from sdb_iot_point where id = #{id}
+    </delete>
+
+    <delete id="deletesdbIotPointByIds" parameterType="String">
+        delete from sdb_iot_point where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
