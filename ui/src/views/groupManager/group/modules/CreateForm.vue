@@ -4,20 +4,11 @@
       <b>{{ formTitle }}</b>
     </a-divider>
     <a-form-model ref="form" :model="form" :rules="rules">
-      <a-form-model-item label="驱动id" prop="driverAttributeId" v-if="formType === 1">
-        <a-input v-model="form.driverAttributeId" placeholder="请输入驱动id" />
-      </a-form-model-item>
-      <a-form-model-item label="模板id" prop="profileId" >
-        <a-input v-model="form.profileId" placeholder="请输入内容" type="textarea" allow-clear />
-      </a-form-model-item>
-      <a-form-model-item label="内容值" prop="value" >
-        <a-input v-model="form.value" placeholder="请输入内容值" />
+      <a-form-model-item label="分组名称" prop="name" >
+        <a-input v-model="form.name" placeholder="请输入分组名称" />
       </a-form-model-item>
       <a-form-model-item label="备注" prop="description" >
         <a-input v-model="form.description" placeholder="请输入备注" />
-      </a-form-model-item>
-      <a-form-model-item label="修改时间" prop="modifyTime" >
-        <a-date-picker style="width: 100%" v-model="form.modifyTime" format="YYYY-MM-DD HH:mm:ss" allow-clear/>
       </a-form-model-item>
       <div class="bottom-control">
         <a-space>
@@ -34,7 +25,7 @@
 </template>
 
 <script>
-import { getDriverInfo, addDriverInfo, updateDriverInfo } from '@/api/driverManager/driverInfo'
+import { getGroup, addGroup, updateGroup } from '@/api/groupManager/group'
 
 export default {
   name: 'CreateForm',
@@ -48,29 +39,17 @@ export default {
       formTitle: '',
       // 表单参数
       form: {
-        id: null,
-        driverAttributeId: null,
-        profileId: null,
-        value: null,
+        name: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       },
       // 1增加,2修改
       formType: 1,
       open: false,
       rules: {
-        driverAttributeId: [
-          { required: true, message: '驱动id不能为空', trigger: 'blur' }
-        ],
-        profileId: [
-          { required: true, message: '模板id不能为空', trigger: 'blur' }
-        ],
-        value: [
-          { required: true, message: '内容值不能为空', trigger: 'blur' }
-        ],
-        modifyTime: [
-          { required: true, message: '修改时间不能为空', trigger: 'blur' }
+        name: [
+          { required: true, message: '分组名称不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -98,13 +77,10 @@ export default {
     reset () {
       this.formType = 1
       this.form = {
-        id: null,
-        driverAttributeId: null,
-        profileId: null,
-        value: null,
+        name: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       }
     },
     /** 新增按钮操作 */
@@ -119,7 +95,7 @@ export default {
       this.reset()
       this.formType = 2
       const id = row ? row.id : ids
-      getDriverInfo(id).then(response => {
+      getGroup(id).then(response => {
         this.form = response.data
         this.open = true
         this.formTitle = '修改'
@@ -130,7 +106,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.form.id !== undefined && this.form.id !== null) {
-            updateDriverInfo(this.form).then(response => {
+            updateGroup(this.form).then(response => {
               this.$message.success(
                 '修改成功',
                 3
@@ -139,7 +115,7 @@ export default {
               this.$emit('ok')
             })
           } else {
-            addDriverInfo(this.form).then(response => {
+            addGroup(this.form).then(response => {
               this.$message.success(
                 '新增成功',
                 3

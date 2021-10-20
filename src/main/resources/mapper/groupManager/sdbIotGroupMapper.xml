@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdb.iot.groupManager.mapper.sdbIotGroupMapper">
+    
+    <resultMap type="sdbIotGroup" id="sdbIotGroupResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectsdbIotGroupVo">
+        select id, name, description, create_time, update_time from sdb_iot_group
+    </sql>
+
+    <select id="selectsdbIotGroupList" parameterType="sdbIotGroup" resultMap="sdbIotGroupResult">
+        <include refid="selectsdbIotGroupVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectsdbIotGroupById" parameterType="Long" resultMap="sdbIotGroupResult">
+        <include refid="selectsdbIotGroupVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertsdbIotGroup" parameterType="sdbIotGroup">
+        insert into sdb_iot_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatesdbIotGroup" parameterType="sdbIotGroup">
+        update sdb_iot_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletesdbIotGroupById" parameterType="Long">
+        delete from sdb_iot_group where id = #{id}
+    </delete>
+
+    <delete id="deletesdbIotGroupByIds" parameterType="String">
+        delete from sdb_iot_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

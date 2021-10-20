@@ -7,16 +7,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="驱动id" prop="driverAttributeId">
-                <a-select placeholder="请选择驱动id" v-model="queryParam.driverAttributeId" style="width: 100%" allow-clear>
-                  <a-select-option>请选择字典生成</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="模板id" prop="profileId">
-                <a-select placeholder="请选择模板id" v-model="queryParam.profileId" style="width: 100%" allow-clear>
-                  <a-select-option>请选择字典生成</a-select-option>
-                </a-select>
+                <a-input v-model="queryParam.driverAttributeId" placeholder="请输入驱动id" allow-clear/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
@@ -140,12 +131,12 @@ export default {
         pageSize: 10
       },
       columns: [
-        {
-          title: 'id',
-          dataIndex: 'id',
-          ellipsis: true,
-          align: 'center'
-        },
+        // {
+        //   title: 'id',
+        //   dataIndex: 'id',
+        //   ellipsis: true,
+        //   align: 'center'
+        // },
         {
           title: '驱动id',
           dataIndex: 'driverAttributeId',

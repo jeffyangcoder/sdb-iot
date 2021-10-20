@@ -4,20 +4,27 @@
       <b>{{ formTitle }}</b>
     </a-divider>
     <a-form-model ref="form" :model="form" :rules="rules">
-      <a-form-model-item label="驱动id" prop="driverAttributeId" v-if="formType === 1">
-        <a-input v-model="form.driverAttributeId" placeholder="请输入驱动id" />
+      <a-form-model-item label="设备名称" prop="name" >
+        <a-input v-model="form.name" placeholder="请输入设备名称" />
       </a-form-model-item>
       <a-form-model-item label="模板id" prop="profileId" >
-        <a-input v-model="form.profileId" placeholder="请输入内容" type="textarea" allow-clear />
+        <a-input v-model="form.profileId" placeholder="请输入模板id" />
       </a-form-model-item>
-      <a-form-model-item label="内容值" prop="value" >
-        <a-input v-model="form.value" placeholder="请输入内容值" />
+      <a-form-model-item label="所属分组id" prop="groupId" >
+        <a-input v-model="form.groupId" placeholder="请输入所属分组id" />
+      </a-form-model-item>
+      <a-form-model-item label="在线状态" prop="enable" >
+        <a-select placeholder="请选择在线状态" v-model="form.enable">
+          <a-select-option v-for="(d, index) in enableOptions" :key="index" :value="d.dictValue" >{{ d.dictLabel }}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item label="储存类型" prop="mulit" >
+        <a-select placeholder="请选择储存类型" v-model="form.mulit">
+          <a-select-option v-for="(d, index) in mulitOptions" :key="index" :value="d.dictValue" >{{ d.dictLabel }}</a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="备注" prop="description" >
         <a-input v-model="form.description" placeholder="请输入备注" />
-      </a-form-model-item>
-      <a-form-model-item label="修改时间" prop="modifyTime" >
-        <a-date-picker style="width: 100%" v-model="form.modifyTime" format="YYYY-MM-DD HH:mm:ss" allow-clear/>
       </a-form-model-item>
       <div class="bottom-control">
         <a-space>
@@ -34,11 +41,19 @@
 </template>
 
 <script>
-import { getDriverInfo, addDriverInfo, updateDriverInfo } from '@/api/driverManager/driverInfo'
+import { getDevice, addDevice, updateDevice } from '@/api/deviceManager/device'
 
 export default {
   name: 'CreateForm',
   props: {
+    enableOptions: {
+      type: Array,
+      required: true
+    },
+    mulitOptions: {
+      type: Array,
+      required: true
+    }
   },
   components: {
   },
@@ -48,29 +63,30 @@ export default {
       formTitle: '',
       // 表单参数
       form: {
-        id: null,
-        driverAttributeId: null,
+        name: null,
         profileId: null,
-        value: null,
+        groupId: null,
+        enable: null,
+        mulit: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       },
       // 1增加,2修改
       formType: 1,
       open: false,
       rules: {
-        driverAttributeId: [
-          { required: true, message: '驱动id不能为空', trigger: 'blur' }
-        ],
         profileId: [
           { required: true, message: '模板id不能为空', trigger: 'blur' }
         ],
-        value: [
-          { required: true, message: '内容值不能为空', trigger: 'blur' }
+        groupId: [
+          { required: true, message: '所属分组id不能为空', trigger: 'blur' }
         ],
-        modifyTime: [
-          { required: true, message: '修改时间不能为空', trigger: 'blur' }
+        enable: [
+          { required: true, message: '在线状态不能为空', trigger: 'change' }
+        ],
+        mulit: [
+          { required: true, message: '储存类型不能为空', trigger: 'change' }
         ]
       }
     }
@@ -98,13 +114,14 @@ export default {
     reset () {
       this.formType = 1
       this.form = {
-        id: null,
-        driverAttributeId: null,
+        name: null,
         profileId: null,
-        value: null,
+        groupId: null,
+        enable: null,
+        mulit: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       }
     },
     /** 新增按钮操作 */
@@ -119,7 +136,7 @@ export default {
       this.reset()
       this.formType = 2
       const id = row ? row.id : ids
-      getDriverInfo(id).then(response => {
+      getDevice(id).then(response => {
         this.form = response.data
         this.open = true
         this.formTitle = '修改'
@@ -130,7 +147,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.form.id !== undefined && this.form.id !== null) {
-            updateDriverInfo(this.form).then(response => {
+            updateDevice(this.form).then(response => {
               this.$message.success(
                 '修改成功',
                 3
@@ -139,7 +156,7 @@ export default {
               this.$emit('ok')
             })
           } else {
-            addDriverInfo(this.form).then(response => {
+            addDevice(this.form).then(response => {
               this.$message.success(
                 '新增成功',
                 3

@@ -6,13 +6,8 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="模板名称" prop="name">
-                <a-input v-model="queryParam.name" placeholder="请输入模板名称" allow-clear/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="分组名称" prop="name">
+                <a-input v-model="queryParam.name" placeholder="请输入分组名称" allow-clear/>
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -26,16 +21,16 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="primary" @click="$refs.createForm.handleAdd()" v-hasPermi="['profileManager:profile:add']">
+        <a-button type="primary" @click="$refs.createForm.handleAdd()" v-hasPermi="['groupManager:group:add']">
           <a-icon type="plus" />新增
         </a-button>
-        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['profileManager:profile:edit']">
+        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['groupManager:group:edit']">
           <a-icon type="edit" />修改
         </a-button>
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['profileManager:profile:remove']">
+        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['groupManager:group:remove']">
           <a-icon type="delete" />删除
         </a-button>
-        <a-button type="primary" @click="handleExport" v-hasPermi="['profileManager:profile:export']">
+        <a-button type="primary" @click="handleExport" v-hasPermi="['groupManager:group:export']">
           <a-icon type="download" />导出
         </a-button>
         <a-button
@@ -49,7 +44,6 @@
       <!-- 增加修改 -->
       <create-form
         ref="createForm"
-        :shareOptions="shareOptions"
         @ok="getList"
       />
       <!-- 数据展示 -->
@@ -61,19 +55,19 @@
         :data-source="list"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :pagination="false">
-        <span slot="share" slot-scope="text, record">
-          {{ shareFormat(record) }}
+        <span slot="createTime" slot-scope="text, record">
+          {{ parseTime(record.createTime) }}
         </span>
-        <span slot="modifyTime" slot-scope="text, record">
-          {{ parseTime(record.modifyTime) }}
+        <span slot="updateTime" slot-scope="text, record">
+          {{ parseTime(record.updateTime) }}
         </span>
         <span slot="operation" slot-scope="text, record">
-          <a-divider type="vertical" v-hasPermi="['profileManager:profile:edit']" />
-          <a @click="$refs.createForm.handleUpdate(record, undefined)" v-hasPermi="['profileManager:profile:edit']">
+          <a-divider type="vertical" v-hasPermi="['groupManager:group:edit']" />
+          <a @click="$refs.createForm.handleUpdate(record, undefined)" v-hasPermi="['groupManager:group:edit']">
             <a-icon type="edit" />修改
           </a>
-          <a-divider type="vertical" v-hasPermi="['profileManager:profile:remove']" />
-          <a @click="handleDelete(record)" v-hasPermi="['profileManager:profile:remove']">
+          <a-divider type="vertical" v-hasPermi="['groupManager:group:remove']" />
+          <a @click="handleDelete(record)" v-hasPermi="['groupManager:group:remove']">
             <a-icon type="delete" />删除
           </a>
         </span>
@@ -95,11 +89,11 @@
 </template>
 
 <script>
-import { listProfile, delProfile, exportProfile } from '@/api/profileManager/profile'
+import { listGroup, delGroup, exportGroup } from '@/api/groupManager/group'
 import CreateForm from './modules/CreateForm'
 
 export default {
-  name: 'Profile',
+  name: 'Group',
   components: {
     CreateForm
   },
@@ -117,12 +111,9 @@ export default {
       ids: [],
       loading: false,
       total: 0,
-      // 公/私有字典
-      shareOptions: [],
       // 查询参数
       queryParam: {
         name: null,
-        driverId: null,
         pageNum: 1,
         pageSize: 10
       },
@@ -134,21 +125,8 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '模板名称',
+          title: '分组名称',
           dataIndex: 'name',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '公/私有',
-          dataIndex: 'share',
-          scopedSlots: { customRender: 'share' },
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '驱动id',
-          dataIndex: 'driverId',
           ellipsis: true,
           align: 'center'
         },
@@ -159,9 +137,16 @@ export default {
           align: 'center'
         },
         {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          scopedSlots: { customRender: 'createTime' },
+          ellipsis: true,
+          align: 'center'
+        },
+        {
           title: '修改时间',
-          dataIndex: 'modifyTime',
-          scopedSlots: { customRender: 'modifyTime' },
+          dataIndex: 'updateTime',
+          scopedSlots: { customRender: 'updateTime' },
           ellipsis: true,
           align: 'center'
         },
@@ -179,27 +164,20 @@ export default {
   },
   created () {
     this.getList()
-    this.getDicts('sdb_iot_profile_share').then(response => {
-      this.shareOptions = response.data
-    })
   },
   computed: {
   },
   watch: {
   },
   methods: {
-    /** 查询模板列表 */
+    /** 查询分组列表 */
     getList () {
       this.loading = true
-      listProfile(this.queryParam).then(response => {
+      listGroup(this.queryParam).then(response => {
         this.list = response.rows
         this.total = response.total
         this.loading = false
       })
-    },
-    // 公/私有字典翻译
-    shareFormat (row, column) {
-      return this.selectDictLabel(this.shareOptions, row.share)
     },
     /** 搜索按钮操作 */
     handleQuery () {
@@ -210,7 +188,6 @@ export default {
     resetQuery () {
       this.queryParam = {
         name: undefined,
-        driverId: undefined,
         pageNum: 1,
         pageSize: 10
       }
@@ -243,7 +220,7 @@ export default {
         title: '确认删除所选中数据?',
         content: '当前选中编号为' + ids + '的数据',
         onOk () {
-          return delProfile(ids)
+          return delGroup(ids)
             .then(() => {
               that.onSelectChange([], [])
               that.getList()
@@ -263,7 +240,7 @@ export default {
         title: '是否确认导出?',
         content: '此操作将导出当前条件下所有数据而非选中数据',
         onOk () {
-          return exportProfile(that.queryParam)
+          return exportGroup(that.queryParam)
             .then(response => {
               that.download(response.msg)
               that.$message.success(

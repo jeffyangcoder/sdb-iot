@@ -4,20 +4,20 @@
       <b>{{ formTitle }}</b>
     </a-divider>
     <a-form-model ref="form" :model="form" :rules="rules">
-      <a-form-model-item label="驱动id" prop="driverAttributeId" v-if="formType === 1">
-        <a-input v-model="form.driverAttributeId" placeholder="请输入驱动id" />
+      <a-form-model-item label="设备id" prop="deviceId" >
+        <a-input v-model="form.deviceId" placeholder="请输入设备id" />
       </a-form-model-item>
-      <a-form-model-item label="模板id" prop="profileId" >
-        <a-input v-model="form.profileId" placeholder="请输入内容" type="textarea" allow-clear />
+      <a-form-model-item label="模板id" prop="pointId" >
+        <a-input v-model="form.pointId" placeholder="请输入模板id" />
       </a-form-model-item>
-      <a-form-model-item label="内容值" prop="value" >
-        <a-input v-model="form.value" placeholder="请输入内容值" />
+      <a-form-model-item label="位号属性id" prop="pointInfoId" >
+        <a-input v-model="form.pointInfoId" placeholder="请输入位号属性id" />
+      </a-form-model-item>
+      <a-form-model-item label="内容" prop="value" >
+        <a-input v-model="form.value" placeholder="请输入内容" />
       </a-form-model-item>
       <a-form-model-item label="备注" prop="description" >
         <a-input v-model="form.description" placeholder="请输入备注" />
-      </a-form-model-item>
-      <a-form-model-item label="修改时间" prop="modifyTime" >
-        <a-date-picker style="width: 100%" v-model="form.modifyTime" format="YYYY-MM-DD HH:mm:ss" allow-clear/>
       </a-form-model-item>
       <div class="bottom-control">
         <a-space>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { getDriverInfo, addDriverInfo, updateDriverInfo } from '@/api/driverManager/driverInfo'
+import { getDevicePoint, addDevicePoint, updateDevicePoint } from '@/api/deviceManager/devicePoint'
 
 export default {
   name: 'CreateForm',
@@ -48,29 +48,29 @@ export default {
       formTitle: '',
       // 表单参数
       form: {
-        id: null,
-        driverAttributeId: null,
-        profileId: null,
+        deviceId: null,
+        pointId: null,
+        pointInfoId: null,
         value: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       },
       // 1增加,2修改
       formType: 1,
       open: false,
       rules: {
-        driverAttributeId: [
-          { required: true, message: '驱动id不能为空', trigger: 'blur' }
+        deviceId: [
+          { required: true, message: '设备id不能为空', trigger: 'blur' }
         ],
-        profileId: [
+        pointId: [
           { required: true, message: '模板id不能为空', trigger: 'blur' }
         ],
-        value: [
-          { required: true, message: '内容值不能为空', trigger: 'blur' }
+        pointInfoId: [
+          { required: true, message: '位号属性id不能为空', trigger: 'blur' }
         ],
-        modifyTime: [
-          { required: true, message: '修改时间不能为空', trigger: 'blur' }
+        value: [
+          { required: true, message: '内容不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -98,13 +98,13 @@ export default {
     reset () {
       this.formType = 1
       this.form = {
-        id: null,
-        driverAttributeId: null,
-        profileId: null,
+        deviceId: null,
+        pointId: null,
+        pointInfoId: null,
         value: null,
         description: null,
         createTime: null,
-        modifyTime: null
+        updateTime: null
       }
     },
     /** 新增按钮操作 */
@@ -119,7 +119,7 @@ export default {
       this.reset()
       this.formType = 2
       const id = row ? row.id : ids
-      getDriverInfo(id).then(response => {
+      getDevicePoint(id).then(response => {
         this.form = response.data
         this.open = true
         this.formTitle = '修改'
@@ -130,7 +130,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.form.id !== undefined && this.form.id !== null) {
-            updateDriverInfo(this.form).then(response => {
+            updateDevicePoint(this.form).then(response => {
               this.$message.success(
                 '修改成功',
                 3
@@ -139,7 +139,7 @@ export default {
               this.$emit('ok')
             })
           } else {
-            addDriverInfo(this.form).then(response => {
+            addDevicePoint(this.form).then(response => {
               this.$message.success(
                 '新增成功',
                 3

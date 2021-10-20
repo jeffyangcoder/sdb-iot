@@ -6,34 +6,25 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
+              <a-form-item label="设备名称" prop="name">
+                <a-input v-model="queryParam.name" placeholder="请输入设备名称" allow-clear/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
               <a-form-item label="模板id" prop="profileId">
                 <a-input v-model="queryParam.profileId" placeholder="请输入模板id" allow-clear/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="位号值" prop="value">
-                <a-input v-model="queryParam.value" placeholder="请输入位号值" allow-clear/>
-              </a-form-item>
-            </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="类型" prop="type">
-                  <a-select placeholder="请选择类型" v-model="queryParam.type" style="width: 100%" allow-clear>
-                    <a-select-option v-for="(d, index) in typeOptions" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
-                  </a-select>
+                <a-form-item label="所属分组id" prop="groupId">
+                  <a-input v-model="queryParam.groupId" placeholder="请输入所属分组id" allow-clear/>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
-                <a-form-item label="读/写" prop="rw">
-                  <a-select placeholder="请选择读/写" v-model="queryParam.rw" style="width: 100%" allow-clear>
-                    <a-select-option v-for="(d, index) in rwOptions" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="累计标识" prop="accrue">
-                  <a-select placeholder="请选择累计标识" v-model="queryParam.accrue" style="width: 100%" allow-clear>
-                    <a-select-option v-for="(d, index) in accrueOptions" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
+                <a-form-item label="在线状态" prop="enable">
+                  <a-select placeholder="请选择在线状态" v-model="queryParam.enable" style="width: 100%" allow-clear>
+                    <a-select-option v-for="(d, index) in enableOptions" :key="index" :value="d.dictValue">{{ d.dictLabel }}</a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -53,16 +44,16 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="primary" @click="$refs.createForm.handleAdd()" v-hasPermi="['profileManager:point:add']">
+        <a-button type="primary" @click="$refs.createForm.handleAdd()" v-hasPermi="['deviceManager:device:add']">
           <a-icon type="plus" />新增
         </a-button>
-        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['profileManager:point:edit']">
+        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['deviceManager:device:edit']">
           <a-icon type="edit" />修改
         </a-button>
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['profileManager:point:remove']">
+        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['deviceManager:device:remove']">
           <a-icon type="delete" />删除
         </a-button>
-        <a-button type="primary" @click="handleExport" v-hasPermi="['profileManager:point:export']">
+        <a-button type="primary" @click="handleExport" v-hasPermi="['deviceManager:device:export']">
           <a-icon type="download" />导出
         </a-button>
         <a-button
@@ -76,9 +67,8 @@
       <!-- 增加修改 -->
       <create-form
         ref="createForm"
-        :typeOptions="typeOptions"
-        :rwOptions="rwOptions"
-        :accrueOptions="accrueOptions"
+        :enableOptions="enableOptions"
+        :mulitOptions="mulitOptions"
         @ok="getList"
       />
       <!-- 数据展示 -->
@@ -90,28 +80,19 @@
         :data-source="list"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :pagination="false">
-        <span slot="type" slot-scope="text, record">
-          {{ typeFormat(record) }}
+        <span slot="enable" slot-scope="text, record">
+          {{ enableFormat(record) }}
         </span>
-        <span slot="rw" slot-scope="text, record">
-          {{ rwFormat(record) }}
-        </span>
-        <span slot="accrue" slot-scope="text, record">
-          {{ accrueFormat(record) }}
-        </span>
-        <span slot="modifyTime" slot-scope="text, record">
-          {{ parseTime(record.modifyTime) }}
-        </span>
-        <span slot="createTime" slot-scope="text, record">
-          {{ parseTime(record.createTime) }}
+        <span slot="mulit" slot-scope="text, record">
+          {{ mulitFormat(record) }}
         </span>
         <span slot="operation" slot-scope="text, record">
-          <a-divider type="vertical" v-hasPermi="['profileManager:point:edit']" />
-          <a @click="$refs.createForm.handleUpdate(record, undefined)" v-hasPermi="['profileManager:point:edit']">
+          <a-divider type="vertical" v-hasPermi="['deviceManager:device:edit']" />
+          <a @click="$refs.createForm.handleUpdate(record, undefined)" v-hasPermi="['deviceManager:device:edit']">
             <a-icon type="edit" />修改
           </a>
-          <a-divider type="vertical" v-hasPermi="['profileManager:point:remove']" />
-          <a @click="handleDelete(record)" v-hasPermi="['profileManager:point:remove']">
+          <a-divider type="vertical" v-hasPermi="['deviceManager:device:remove']" />
+          <a @click="handleDelete(record)" v-hasPermi="['deviceManager:device:remove']">
             <a-icon type="delete" />删除
           </a>
         </span>
@@ -133,11 +114,11 @@
 </template>
 
 <script>
-import { listPoint, delPoint, exportPoint } from '@/api/profileManager/point'
+import { listDevice, delDevice, exportDevice } from '@/api/deviceManager/device'
 import CreateForm from './modules/CreateForm'
 
 export default {
-  name: 'Point',
+  name: 'Device',
   components: {
     CreateForm
   },
@@ -155,19 +136,16 @@ export default {
       ids: [],
       loading: false,
       total: 0,
-      // 类型字典
-      typeOptions: [],
-      // 读/写字典
-      rwOptions: [],
-      // 累计标识字典
-      accrueOptions: [],
+      // 在线状态字典
+      enableOptions: [],
+      // 储存类型字典
+      mulitOptions: [],
       // 查询参数
       queryParam: {
+        name: null,
         profileId: null,
-        value: null,
-        type: null,
-        rw: null,
-        accrue: null,
+        groupId: null,
+        enable: null,
         pageNum: 1,
         pageSize: 10
       },
@@ -179,85 +157,40 @@ export default {
         //   align: 'center'
         // },
         {
+          title: '设备名称',
+          dataIndex: 'name',
+          ellipsis: true,
+          align: 'center'
+        },
+        {
           title: '模板id',
           dataIndex: 'profileId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '位号值',
-          dataIndex: 'value',
+          title: '所属分组id',
+          dataIndex: 'groupId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '类型',
-          dataIndex: 'type',
-          scopedSlots: { customRender: 'type' },
+          title: '在线状态',
+          dataIndex: 'enable',
+          scopedSlots: { customRender: 'enable' },
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '读/写',
-          dataIndex: 'rw',
-          scopedSlots: { customRender: 'rw' },
+          title: '储存类型',
+          dataIndex: 'mulit',
+          scopedSlots: { customRender: 'mulit' },
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '基础值',
-          dataIndex: 'base',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '最小值',
-          dataIndex: 'minimum',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '最大值',
-          dataIndex: 'maximum',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '倍数',
-          dataIndex: 'multiple',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '累计标识',
-          dataIndex: 'accrue',
-          scopedSlots: { customRender: 'accrue' },
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '数据格式',
-          dataIndex: 'format',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '单位',
-          dataIndex: 'unit',
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '修改时间',
-          dataIndex: 'modifyTime',
-          scopedSlots: { customRender: 'modifyTime' },
-          ellipsis: true,
-          align: 'center'
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createTime',
-          scopedSlots: { customRender: 'createTime' },
+          title: '备注',
+          dataIndex: 'description',
           ellipsis: true,
           align: 'center'
         },
@@ -275,14 +208,11 @@ export default {
   },
   created () {
     this.getList()
-    this.getDicts('sdb_iot_attribute_type').then(response => {
-      this.typeOptions = response.data
+    this.getDicts('sdb_iot_driver_enable').then(response => {
+      this.enableOptions = response.data
     })
-    this.getDicts('sdb_iot_point_rw').then(response => {
-      this.rwOptions = response.data
-    })
-    this.getDicts('sdb_iot_point_accrue').then(response => {
-      this.accrueOptions = response.data
+    this.getDicts('sdb_iot_device_mulit').then(response => {
+      this.mulitOptions = response.data
     })
   },
   computed: {
@@ -290,26 +220,22 @@ export default {
   watch: {
   },
   methods: {
-    /** 查询位号列表 */
+    /** 查询设备列表 */
     getList () {
       this.loading = true
-      listPoint(this.queryParam).then(response => {
+      listDevice(this.queryParam).then(response => {
         this.list = response.rows
         this.total = response.total
         this.loading = false
       })
     },
-    // 类型字典翻译
-    typeFormat (row, column) {
-      return this.selectDictLabel(this.typeOptions, row.type)
+    // 在线状态字典翻译
+    enableFormat (row, column) {
+      return this.selectDictLabel(this.enableOptions, row.enable)
     },
-    // 读/写字典翻译
-    rwFormat (row, column) {
-      return this.selectDictLabel(this.rwOptions, row.rw)
-    },
-    // 累计标识字典翻译
-    accrueFormat (row, column) {
-      return this.selectDictLabel(this.accrueOptions, row.accrue)
+    // 储存类型字典翻译
+    mulitFormat (row, column) {
+      return this.selectDictLabel(this.mulitOptions, row.mulit)
     },
     /** 搜索按钮操作 */
     handleQuery () {
@@ -319,11 +245,10 @@ export default {
     /** 重置按钮操作 */
     resetQuery () {
       this.queryParam = {
+        name: undefined,
         profileId: undefined,
-        value: undefined,
-        type: undefined,
-        rw: undefined,
-        accrue: undefined,
+        groupId: undefined,
+        enable: undefined,
         pageNum: 1,
         pageSize: 10
       }
@@ -356,7 +281,7 @@ export default {
         title: '确认删除所选中数据?',
         content: '当前选中编号为' + ids + '的数据',
         onOk () {
-          return delPoint(ids)
+          return delDevice(ids)
             .then(() => {
               that.onSelectChange([], [])
               that.getList()
@@ -376,7 +301,7 @@ export default {
         title: '是否确认导出?',
         content: '此操作将导出当前条件下所有数据而非选中数据',
         onOk () {
-          return exportPoint(that.queryParam)
+          return exportDevice(that.queryParam)
             .then(response => {
               that.download(response.msg)
               that.$message.success(

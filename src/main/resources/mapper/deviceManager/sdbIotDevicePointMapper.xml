@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdb.iot.deviceManager.mapper.sdbIotDevicePointMapper">
+    
+    <resultMap type="sdbIotDevicePoint" id="sdbIotDevicePointResult">
+        <result property="id"    column="id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="pointId"    column="point_id"    />
+        <result property="pointInfoId"    column="point_info_id"    />
+        <result property="value"    column="value"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectsdbIotDevicePointVo">
+        select id, device_id, point_id, point_info_id, value, description, create_time, update_time from sdb_iot_device_point
+    </sql>
+
+    <select id="selectsdbIotDevicePointList" parameterType="sdbIotDevicePoint" resultMap="sdbIotDevicePointResult">
+        <include refid="selectsdbIotDevicePointVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="pointId != null "> and point_id = #{pointId}</if>
+            <if test="pointInfoId != null "> and point_info_id = #{pointInfoId}</if>
+        </where>
+    </select>
+    
+    <select id="selectsdbIotDevicePointById" parameterType="Long" resultMap="sdbIotDevicePointResult">
+        <include refid="selectsdbIotDevicePointVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertsdbIotDevicePoint" parameterType="sdbIotDevicePoint" useGeneratedKeys="true" keyProperty="id">
+        insert into sdb_iot_device_point
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="pointId != null">point_id,</if>
+            <if test="pointInfoId != null">point_info_id,</if>
+            <if test="value != null and value != ''">value,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="pointId != null">#{pointId},</if>
+            <if test="pointInfoId != null">#{pointInfoId},</if>
+            <if test="value != null and value != ''">#{value},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatesdbIotDevicePoint" parameterType="sdbIotDevicePoint">
+        update sdb_iot_device_point
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="pointId != null">point_id = #{pointId},</if>
+            <if test="pointInfoId != null">point_info_id = #{pointInfoId},</if>
+            <if test="value != null and value != ''">value = #{value},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletesdbIotDevicePointById" parameterType="Long">
+        delete from sdb_iot_device_point where id = #{id}
+    </delete>
+
+    <delete id="deletesdbIotDevicePointByIds" parameterType="String">
+        delete from sdb_iot_device_point where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
