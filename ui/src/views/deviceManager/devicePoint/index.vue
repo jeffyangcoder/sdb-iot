@@ -130,12 +130,12 @@ export default {
         pageSize: 10
       },
       columns: [
-        {
-          title: 'id',
-          dataIndex: 'id',
-          ellipsis: true,
-          align: 'center'
-        },
+        // {
+        //   title: 'id',
+        //   dataIndex: 'id',
+        //   ellipsis: true,
+        //   align: 'center'
+        // },
         {
           title: '设备id',
           dataIndex: 'deviceId',
