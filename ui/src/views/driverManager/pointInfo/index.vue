@@ -64,9 +64,9 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:pointInfo:remove']">
-          <a-icon type="delete" />删除
-        </a-button>
+<!--        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:pointInfo:remove']">-->
+<!--          <a-icon type="delete" />删除-->
+<!--        </a-button>-->
         <a-button type="primary" @click="handleExport" v-hasPermi="['driverManager:pointInfo:export']">
           <a-icon type="download" />导出
         </a-button>
@@ -90,7 +90,7 @@
         <span slot="type" slot-scope="text, record">
           {{ typeFormat(record) }}
         </span>
-        <span slot="createTime" slot-scope="text, record">
+        <span slot="createTime" slot-scope="text, record" >
           {{ parseTime(record.createTime) }}
         </span>
         <span slot="modifyTime" slot-scope="text, record">
@@ -121,7 +121,7 @@
 
 <script>
 import { listPointInfo, delPointInfo, exportPointInfo } from '@/api/driverManager/pointInfo'
-// import CreateForm from './modules/CreateForm'
+import { listDriver } from '@/api/driverManager/driver'
 
 export default {
   name: 'PointInfo',
@@ -132,6 +132,8 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // driver
+      driverList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -164,7 +166,7 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '驱动id',
+          title: '驱动',
           dataIndex: 'driverId',
           ellipsis: true,
           align: 'center'
@@ -213,14 +215,14 @@ export default {
           scopedSlots: { customRender: 'modifyTime' },
           ellipsis: true,
           align: 'center'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          width: '18%',
-          scopedSlots: { customRender: 'operation' },
-          align: 'center'
         }
+        // {
+        //   title: '操作',
+        //   dataIndex: 'operation',
+        //   width: '18%',
+        //   scopedSlots: { customRender: 'operation' },
+        //   align: 'center'
+        // }
       ]
     }
   },
@@ -244,6 +246,18 @@ export default {
         this.list = response.rows
         this.total = response.total
         this.loading = false
+        listDriver(this.query).then(response => {
+          this.driverList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            // console.log(i + 'i')
+            for (let j = 0; j < this.driverList.length; j++) {
+              // console.log(this.driverList[0].id)
+              if (this.list[i].driverId === this.driverList[j].id) {
+                this.list[i].driverId = this.driverList[j].name
+              }
+            }
+          }
+        })
       })
     },
     // 类型字典翻译

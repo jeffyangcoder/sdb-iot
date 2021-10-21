@@ -7,7 +7,9 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="驱动名称" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动名称" allow-clear/>
+                <a-select aria-placeholder="请选择驱动" v-model="queryParam.driverId" style="width: 100%" allow-clear>
+                  <a-select-option v-for="(d, index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -37,9 +39,9 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driverAttribute:remove']">
-          <a-icon type="delete" />删除
-        </a-button>
+<!--        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driverAttribute:remove']">-->
+<!--          <a-icon type="delete" />删除-->
+<!--        </a-button>-->
         <a-button type="primary" @click="handleExport" v-hasPermi="['driverManager:driverAttribute:export']">
           <a-icon type="download" />导出
         </a-button>
@@ -68,12 +70,6 @@
         </span>
         <span slot="modifyTime" slot-scope="text, record">
           {{ parseTime(record.modifyTime) }}
-        </span>
-        <span slot="operation" slot-scope="text, record">
-          <a-divider type="vertical" v-hasPermi="['driverManager:driverAttribute:remove']" />
-          <a @click="handleDelete(record)" v-hasPermi="['driverManager:driverAttribute:remove']">
-            <a-icon type="delete" />删除
-          </a>
         </span>
       </a-table>
       <!-- 分页 -->
@@ -222,9 +218,9 @@ export default {
         listDriver(this.query).then(response => {
           this.driverList = response.rows
           for (let i = 0; i < this.list.length; i++) {
-            console.log(i + 'i')
+            // console.log(i + 'i')
             for (let j = 0; j < this.driverList.length; j++) {
-              console.log(this.driverList[0].id)
+              // console.log(this.driverList[0].id)
               if (this.list[i].driverId === this.driverList[j].id) {
                 this.list[i].driverId = this.driverList[j].name
               }
