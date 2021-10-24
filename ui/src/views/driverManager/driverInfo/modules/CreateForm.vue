@@ -12,8 +12,16 @@
       </a-form-model-item>
       <a-form-model-item label="驱动配置" prop="driverAttributeId" v-if="formType === 1">
         <a-select v-model="form.driverAttributeId" >
-          <a-select-option v-for="(d,index) in driverAttributeList1" :key="index" :value="d.id">{{ d.name }}</a-select-option><!--          TODO:双重循环查找-->
+          <a-select-opt-group v-for="(d,index) in driverList" :key="index" :value="d.id">
+            <span slot="label"><a-icon type="user" />{{ d.name }}</span>
+            <a-select-option v-for="(a,num) in driverAttributeList" :key="num" :value="a.id">{{ a.name }}</a-select-option>
+          </a-select-opt-group>
+<!--          <a-select-option v-for="(d,index) in driverAttributeList" :key="index" :value="d.id">{{ d.name }}</a-select-option>-->
+<!--          <a-select-opt-group v-for="">-->
+
+<!--          </a-select-opt-group>-->
         </a-select>
+        <!--          TODO:双重循环查找-->
       </a-form-model-item>
       <a-form-model-item label="模板" prop="profileId" >
         <a-select aria-placeholder="请选择模板" v-model="form.profileId" >
@@ -124,10 +132,10 @@ export default {
     listProfile(this.query2).then(response => {
       this.profileList = response.rows
     })
-    // listDriverAttribute(this.query1).then(response => {
-    //   console(this.driverId)
-    //   this.driverAttributeList1 = response.rows
-    // })
+    listDriverAttribute(this.query1).then(response => {
+      console.log(this.list)
+      this.driverAttributeList1 = response.rows
+    })
   },
   computed: {
   },

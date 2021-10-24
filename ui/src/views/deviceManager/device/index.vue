@@ -11,13 +11,13 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="模板id" prop="profileId">
+              <a-form-item label="模板名称" prop="profileId">
                 <a-input v-model="queryParam.profileId" placeholder="请输入模板id" allow-clear/>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="所属分组id" prop="groupId">
+                <a-form-item label="所属分组名称" prop="groupId">
                   <a-input v-model="queryParam.groupId" placeholder="请输入所属分组id" allow-clear/>
                 </a-form-item>
               </a-col>
@@ -163,13 +163,13 @@ export default {
           align: 'center'
         },
         {
-          title: '模板id',
+          title: '模板名称',
           dataIndex: 'profileId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '所属分组id',
+          title: '分组名称',
           dataIndex: 'groupId',
           ellipsis: true,
           align: 'center'

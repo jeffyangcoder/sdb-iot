@@ -112,6 +112,12 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // 设备列表
+      deviceList: null,
+      // 模板列表
+      profileList: null,
+      // 位号属性列表
+      pointList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -122,6 +128,10 @@ export default {
       loading: false,
       total: 0,
       // 查询参数
+      query: {
+        profileId: null,
+        profileName: null
+      },
       queryParam: {
         deviceId: null,
         pointId: null,
@@ -137,19 +147,19 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '设备id',
+          title: '设备名称',
           dataIndex: 'deviceId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '模板id',
+          title: '模板名称',
           dataIndex: 'pointId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '位号属性id',
+          title: '位号属性',
           dataIndex: 'pointInfoId',
           ellipsis: true,
           align: 'center'
