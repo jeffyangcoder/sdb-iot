@@ -253,6 +253,26 @@ export default {
           }
         })
         this.total = response.total
+        listProfile(this.queryProfile).then(response => {
+          this.profileList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.profileList.length; j++) {
+              if (this.list[i].profileId === this.profileList[j].id) {
+                this.list[i].profileId = this.profileList[j].name
+              }
+            }
+          }
+        })
+        listGroup(this.queryGroup).then(response => {
+          this.groupList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.groupList.length; j++) {
+              if (this.list[i].groupId === this.groupList[j].id) {
+                this.list[i].groupId = this.groupList[j].name
+              }
+            }
+          }
+        })
         this.loading = false
       })
     },
