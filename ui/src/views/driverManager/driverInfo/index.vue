@@ -236,9 +236,7 @@ export default {
         listDriver(this.query).then(response => {
           this.driverList = response.rows
           for (let i = 0; i < this.list.length; i++) {
-            // console.log(i + 'i')
             for (let j = 0; j < this.driverList.length; j++) {
-              // console.log(this.driverList[0].id)
               if (this.list[i].driverId === this.driverList[j].id) {
                 this.list[i].driverId = this.driverList[j].name
               }
@@ -248,9 +246,7 @@ export default {
         listDriverAttribute(this.query2).then(response => {
           this.driverAttributeList = response.rows
           for (let i = 0; i < this.list.length; i++) {
-            // console.log(i + 'i')
             for (let j = 0; j < this.driverAttributeList.length; j++) {
-              // console.log(this.driverList[0].id)
               if (this.list[i].driverAttributeId === this.driverAttributeList[j].id) {
                 this.list[i].driverAttributeId = this.driverAttributeList[j].name
               }
@@ -262,7 +258,6 @@ export default {
           for (let i = 0; i < this.list.length; i++) {
             // console.log(i + 'i')
             for (let j = 0; j < this.profileList.length; j++) {
-              // console.log(this.driverList[0].id)
               if (this.list[i].profileId === this.profileList[j].id) {
                 this.list[i].profileId = this.profileList[j].name
               }

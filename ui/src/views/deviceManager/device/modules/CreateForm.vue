@@ -7,11 +7,15 @@
       <a-form-model-item label="设备名称" prop="name" >
         <a-input v-model="form.name" placeholder="请输入设备名称" />
       </a-form-model-item>
-      <a-form-model-item label="模板id" prop="profileId" >
-        <a-input v-model="form.profileId" placeholder="请输入模板id" />
+      <a-form-model-item label="模板名称" prop="profileId" >
+        <a-select v-model="form.profileId" allow-clear>
+          <a-select-option v-for="(d, index) in profileList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+        </a-select>
       </a-form-model-item>
-      <a-form-model-item label="所属分组id" prop="groupId" >
-        <a-input v-model="form.groupId" placeholder="请输入所属分组id" />
+      <a-form-model-item label="所属分组" prop="groupId" >
+        <a-select v-model="form.groupId" allow-clear>
+          <a-select-option v-for="(d, index) in groupList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="在线状态" prop="enable" >
         <a-select placeholder="请选择在线状态" v-model="form.enable">
@@ -19,7 +23,7 @@
         </a-select>
       </a-form-model-item>
       <a-form-model-item label="储存类型" prop="mulit" >
-        <a-select placeholder="请选择储存类型" v-model="form.mulit">
+        <a-select placeholder="请选择储存类型" v-model="form.mulit" >
           <a-select-option v-for="(d, index) in mulitOptions" :key="index" :value="d.dictValue" >{{ d.dictLabel }}</a-select-option>
         </a-select>
       </a-form-model-item>
@@ -42,6 +46,8 @@
 
 <script>
 import { getDevice, addDevice, updateDevice } from '@/api/deviceManager/device'
+import { listProfile } from '@/api/profileManager/profile'
+import { listGroup } from '@/api/groupManager/group'
 
 export default {
   name: 'CreateForm',
@@ -61,6 +67,16 @@ export default {
     return {
       loading: false,
       formTitle: '',
+      profileList: null,
+      groupList: null,
+      queryProfile: {
+        profileId: null,
+        profileName: null
+      },
+      queryGroup: {
+        groupId: null,
+        groupName: null
+      },
       // 表单参数
       form: {
         name: null,
@@ -94,6 +110,12 @@ export default {
   filters: {
   },
   created () {
+    listProfile(this.query).then(response => {
+      this.profileList = response.rows
+    })
+    listGroup(this.query).then(response => {
+      this.groupList = response.rows
+    })
   },
   computed: {
   },

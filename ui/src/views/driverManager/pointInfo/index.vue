@@ -6,8 +6,10 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="驱动名称" prop="driverId">
+                <a-select v-model="queryParam.driverId">
+                  <a-select-option v-for="(d,index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -245,19 +247,17 @@ export default {
       listPointInfo(this.queryParam).then(response => {
         this.list = response.rows
         this.total = response.total
-        this.loading = false
         listDriver(this.query).then(response => {
           this.driverList = response.rows
           for (let i = 0; i < this.list.length; i++) {
-            // console.log(i + 'i')
             for (let j = 0; j < this.driverList.length; j++) {
-              // console.log(this.driverList[0].id)
               if (this.list[i].driverId === this.driverList[j].id) {
                 this.list[i].driverId = this.driverList[j].name
               }
             }
           }
         })
+        this.loading = false
       })
     },
     // 类型字典翻译
