@@ -6,13 +6,17 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="设备id" prop="deviceId">
-                <a-input v-model="queryParam.deviceId" placeholder="请输入设备id" allow-clear/>
+              <a-form-item label="设备名称" prop="deviceId">
+                <a-select v-model="queryParam.deviceId" allow-clear>
+                  <a-select-option v-for="(d, index) in this.deviceList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="模板id" prop="pointId">
-                <a-input v-model="queryParam.pointId" placeholder="请输入模板id" allow-clear/>
+              <a-form-item label="位号名称" prop="pointId">
+                <a-select v-model="queryParam.pointId" allow-clear>
+                  <a-select-option v-for="(d, index) in this.pointList" :key="index" :value="d.id">{{ d.value }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
@@ -100,6 +104,9 @@
 
 <script>
 import { listDevicePoint, delDevicePoint, exportDevicePoint } from '@/api/deviceManager/devicePoint'
+import { listDevice } from '@/api/deviceManager/device'
+import { listPointInfo } from '@/api/driverManager/pointInfo'
+import { listPoint } from '@/api/profileManager/point'
 import CreateForm from './modules/CreateForm'
 
 export default {
@@ -114,10 +121,10 @@ export default {
       selectedRows: [],
       // 设备列表
       deviceList: null,
-      // 模板列表
-      profileList: null,
-      // 位号属性列表
+      // 位号列表
       pointList: null,
+      // 位号属性列表
+      pointInfoList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -128,9 +135,17 @@ export default {
       loading: false,
       total: 0,
       // 查询参数
-      query: {
-        profileId: null,
-        profileName: null
+      queryPointInfo: {
+        pointInfoId: null,
+        pointInfoName: null
+      },
+      queryDevice: {
+        deviceId: null,
+        deviceName: null
+      },
+      queryPoint: {
+        pointId: null,
+        pointName: null
       },
       queryParam: {
         deviceId: null,
@@ -153,7 +168,7 @@ export default {
           align: 'center'
         },
         {
-          title: '模板名称',
+          title: '位号名称',
           dataIndex: 'pointId',
           ellipsis: true,
           align: 'center'
@@ -202,9 +217,40 @@ export default {
       listDevicePoint(this.queryParam).then(response => {
         this.list = response.rows
         this.total = response.total
-        this.loading = false
+        listPoint(this.queryPoint).then(response => {
+          this.pointList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.pointList.length; j++) {
+              if (this.list[i].pointId === this.pointList[j].id) {
+                this.list[i].pointId = this.pointList[j].value
+              }
+            }
+          }
+        })
+        listDevice(this.queryDevice).then(response => {
+          this.deviceList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.deviceList.length; j++) {
+              if (this.list[i].deviceId === this.deviceList[j].id) {
+                this.list[i].deviceId = this.deviceList[j].name
+              }
+            }
+          }
+        })
+        listPointInfo(this.queryPointInfo).then(response => {
+          this.pointInfoList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.pointInfoList.length; j++) {
+              if (this.list[i].pointInfoId === this.pointInfoList[j].id) {
+                this.list[i].pointInfoId = this.pointInfoList[j].displayValue
+              }
+            }
+          }
+        })
       })
+      this.loading = false
     },
+
     /** 搜索按钮操作 */
     handleQuery () {
       this.queryParam.pageNum = 1

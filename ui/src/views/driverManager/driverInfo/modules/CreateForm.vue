@@ -4,25 +4,20 @@
       <b>{{ formTitle }}</b>
     </a-divider>
     <a-form-model ref="form" :model="form" :rules="rules">
-      <a-form-model-item label="驱动名称" prop="driverId" v-if="formType === 1">
+      <a-form-model-item label="驱动名称" prop="driverId" >
         <a-select aria-placeholder="请选择驱动" v-model="form.driverId" >
-<!--          TODO:加一个搜索框-->
-          <a-select-option v-for="(d, index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+          <a-select-option v-for="(d,index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
         </a-select>
       </a-form-model-item>
-      <a-form-model-item label="驱动配置" prop="driverAttributeId" v-if="formType === 1">
+      <a-form-model-item label="驱动配置" prop="driverAttributeId">
         <a-select v-model="form.driverAttributeId" >
           <a-select-opt-group v-for="(d,index) in driverList" :key="index" :value="d.id">
             <span slot="label"><a-icon type="user" />{{ d.name }}</span>
-            <a-select-option v-for="(a,num) in driverAttributeList" :key="num" :value="a.id">{{ a.name }}</a-select-option>
+            <a-select-option v-for="(a,num) in driverAttributeList" v-if="a.driverId === d.id" :key="num" :value="a.id">{{ a.name }}</a-select-option>
           </a-select-opt-group>
-<!--          <a-select-option v-for="(d,index) in driverAttributeList" :key="index" :value="d.id">{{ d.name }}</a-select-option>-->
-<!--          <a-select-opt-group v-for="">-->
-
-<!--          </a-select-opt-group>-->
         </a-select>
+        </a-form-model-item>
         <!--          TODO:双重循环查找-->
-      </a-form-model-item>
       <a-form-model-item label="模板" prop="profileId" >
         <a-select aria-placeholder="请选择模板" v-model="form.profileId" >
           <a-select-option v-for="(d, index) in profileList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
@@ -69,7 +64,6 @@ export default {
       formTitle: '',
       // driver
       driverList: null,
-
       // driverAttribute
       driverAttributeList: null,
       driverAttributeList1: null,
@@ -86,6 +80,11 @@ export default {
       query2: {
         profileId: null,
         profileName: null
+      },
+      query3: {
+        driverAttributeId: null,
+        driverId: null,
+        driverAttributeName: null
       },
       // 表单参数
       form: {
@@ -132,8 +131,10 @@ export default {
     listProfile(this.query2).then(response => {
       this.profileList = response.rows
     })
-    listDriverAttribute(this.query1).then(response => {
-      console.log(this.list)
+    listDriverAttribute(this.query3).then(response => {
+      for (let i = 0; i < this.driverList.length; i++) {
+        console.log(this.driverList[i].id + this.driverList[i].name)
+      }
       this.driverAttributeList1 = response.rows
     })
   },

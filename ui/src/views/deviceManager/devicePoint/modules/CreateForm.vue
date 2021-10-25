@@ -4,14 +4,20 @@
       <b>{{ formTitle }}</b>
     </a-divider>
     <a-form-model ref="form" :model="form" :rules="rules">
-      <a-form-model-item label="设备id" prop="deviceId" >
-        <a-input v-model="form.deviceId" placeholder="请输入设备id" />
+      <a-form-model-item label="设备名称" prop="deviceId" >
+        <a-select v-model="form.deviceId" allow-clear>
+          <a-select-option v-for="(d, index) in this.deviceList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+        </a-select>
       </a-form-model-item>
-      <a-form-model-item label="模板id" prop="pointId" >
-        <a-input v-model="form.pointId" placeholder="请输入模板id" />
+      <a-form-model-item label="位号名称" prop="pointId" >
+        <a-select v-model="form.pointId" allow-clear>
+          <a-select-option v-for="(d, index) in this.pointList" :key="index" :value="d.id">{{ d.value }}</a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="位号属性id" prop="pointInfoId" >
-        <a-input v-model="form.pointInfoId" placeholder="请输入位号属性id" />
+        <a-select v-model="form.pointInfoId" allow-clear>
+          <a-select-option v-for="(d, index) in this.pointInfoList" :key="index" :value="d.id">{{ d.displayValue }}</a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="内容" prop="value" >
         <a-input v-model="form.value" placeholder="请输入内容" />
@@ -35,6 +41,9 @@
 
 <script>
 import { getDevicePoint, addDevicePoint, updateDevicePoint } from '@/api/deviceManager/devicePoint'
+import { listDevice } from '@/api/deviceManager/device'
+import { listPointInfo } from '@/api/driverManager/pointInfo'
+import { listPoint } from '@/api/profileManager/point'
 
 export default {
   name: 'CreateForm',
@@ -46,6 +55,21 @@ export default {
     return {
       loading: false,
       formTitle: '',
+      deviceList: null,
+      pointList: null,
+      pointInfoList: null,
+      queryDevice: {
+        deviceId: null,
+        deviceName: null
+      },
+      queryPoint: {
+        pointId: null,
+        pointValue: null
+      },
+      queryPointInfo: {
+        pointInfoId: null,
+        pointInfoName: null
+      },
       // 表单参数
       form: {
         deviceId: null,
@@ -78,6 +102,15 @@ export default {
   filters: {
   },
   created () {
+    listDevice(this.queryDevice).then(response => {
+      this.deviceList = response.rows
+    })
+    listPoint(this.queryPoint).then(response => {
+      this.pointList = response.rows
+    })
+    listPointInfo(this.queryPointInfo).then(response => {
+      this.pointInfoList = response.rows
+    })
   },
   computed: {
   },
