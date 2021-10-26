@@ -51,6 +51,12 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!--MongoDB-Spring驱动包-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

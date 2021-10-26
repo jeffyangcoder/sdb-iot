@@ -10,12 +10,12 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class } )
 @ComponentScan({"com.sdb.*"})
-public class SdbErpApplication
+public class SdbIotApplication
 {
     public static void main(String[] args)
     {
         // System.setProperty("spring.devtools.restart.enabled", "false");
-        SpringApplication.run(SdbErpApplication.class, args);
+        SpringApplication.run(SdbIotApplication.class, args);
         System.out.println("========= 系统启动成功========");
     }
 }
