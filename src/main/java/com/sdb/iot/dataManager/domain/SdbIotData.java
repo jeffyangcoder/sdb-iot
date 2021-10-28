@@ -1,63 +1,61 @@
 package com.sdb.iot.dataManager.domain;
 
 import com.sdb.base.annotation.Excel;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sdb.base.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
- * 驱动状态对象 sdb_iot_data
- *
- * @author sdb
- * @date 2021-10-17
+ * @author yangshiwei
+ * @Description
+ * @date 2021/10/28-11:01
  */
+
 @Document(collection = "data")
-public class sdbIotData {
+public class SdbIotData extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 数据id */
+    @Id
     private Long id;
 
-    /** 驱动id */
-    @Excel(name = "驱动id")
-    private Long deviceId;
+    @Excel(name = "设备id")
+    @Field("deviceid")
+    private Long deviceId; // 设备
 
-    /** 分组id */
+    @Excel(name = "设备位号id")
+    @Field("devicepointid")
+    private Long devicePointId; // 设备位号名称
+
     @Excel(name = "分组id")
+    @Field("groupid")
     private Long groupId;
 
-    /** 位号Id */
-    @Excel(name = "位号id")
-    private Long devicePointId;
-
-    /** 原始值 */
     @Excel(name = "原始值")
-    private double originalValue;
+    @Field("originalvalue")
+    private double originalValue; // 原始值
 
-    /** 处理值 */
     @Excel(name = "处理值")
-    private double processValue;
+    @Field("processvalue")
+    private double processValue; // 处理值
 
-    /** 自定义*/
     @Excel(name = "自定义")
-    private String custom;
+    private String custom; //  自定义
 
-    /**采集日期 */
-    @Excel(name = "采集日期")
-    private LocalDateTime acquisition;
+    @Excel(name = "采集时间")
+    private LocalDateTime acquisition;// 采集时间
 
-    /** 时延*/
     @Excel(name = "时延")
-    private int delay;
+    private int delay; // 时延
 
-    /** 保存日期*/
-    @Excel(name = "保存日期")
-    private Date saveDate;
-
+    @Excel(name = "保存时间")
+    @Field("savedate")
+    private LocalDateTime saveDate; // 保存时间
 
     public Long getId() {
         return id;
@@ -73,18 +71,18 @@ public class sdbIotData {
         this.deviceId = deviceId;
     }
 
-    public Long getGroupId() {
-        return groupId;
-    }
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
-    }
-
     public Long getDevicePointId() {
         return devicePointId;
     }
     public void setDevicePointId(Long devicePointId) {
         this.devicePointId = devicePointId;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public double getOriginalValue() {
@@ -122,25 +120,26 @@ public class sdbIotData {
         this.delay = delay;
     }
 
-    public Date getSaveDate() {
+    public LocalDateTime getSaveDate() {
         return saveDate;
     }
-    public void setSaveDate(Date saveDate) {
+    public void setSaveDate(LocalDateTime saveDate) {
         this.saveDate = saveDate;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id",getId())
-                .append("deviceId",getDeviceId())
-                .append("groupId",getGroupId())
-                .append("devicePointId",getDevicePointId())
-                .append("originalValue",getOriginalValue())
+                .append("ID", getId())
+                .append("deviceID", getDeviceId())
+                .append("devicePointID", getDevicePointId())
+                .append("groupID", getGroupId())
+                .append("originalValue", getOriginalValue())
+                .append("processValue",getProcessValue())
                 .append("custom",getCustom())
                 .append("acquisition",getAcquisition())
                 .append("delay",getDelay())
-                .append("saveDate",getSaveDate())
+                .append("saveData",getSaveDate())
                 .toString();
     }
 }

@@ -8,6 +8,8 @@ import com.sdb.iot.groupManager.mapper.sdbIotGroupMapper;
 import com.sdb.iot.groupManager.domain.sdbIotGroup;
 import com.sdb.iot.groupManager.service.IsdbIotGroupService;
 
+import javax.annotation.Resource;
+
 /**
  * 分组Service业务层处理
  * 
@@ -17,7 +19,7 @@ import com.sdb.iot.groupManager.service.IsdbIotGroupService;
 @Service
 public class sdbIotGroupServiceImpl implements IsdbIotGroupService 
 {
-    @Autowired
+    @Resource
     private sdbIotGroupMapper sdbIotGroupMapper;
 
     /**
