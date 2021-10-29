@@ -18,30 +18,30 @@ export function getData (id) {
 }
 
 // 新增数据
-export function addData (data) {
-  return request({
-    url: '/dataManager/data',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改数据
-export function updateData (data) {
-  return request({
-    url: '/dataManager/data',
-    method: 'put',
-    data: data
-  })
-}
-
-// 删除数据
-export function delData (id) {
-  return request({
-    url: 'dataManager/data' + id,
-    method: 'delete'
-  })
-}
+// export function addData (data) {
+//   return request({
+//     url: '/dataManager/data',
+//     method: 'post',
+//     data: data
+//   })
+// }
+//
+// // 修改数据
+// export function updateData (data) {
+//   return request({
+//     url: '/dataManager/data',
+//     method: 'put',
+//     data: data
+//   })
+// }
+//
+// // 删除数据
+// export function delData (id) {
+//   return request({
+//     url: 'dataManager/data' + id,
+//     method: 'delete'
+//   })
+// }
 
 // 导出数据
 export function exportData (query) {

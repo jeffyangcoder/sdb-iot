@@ -1,6 +1,7 @@
 package com.sdb.iot.dataManager.service;
 
 import com.sdb.iot.dataManager.domain.SdbIotData;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,26 +13,35 @@ import java.util.List;
  */
 public interface SdbIotDataService {
     /**
-     * TODO:查询数据
+     * 查询数据
      *
      * @param deviceId 设备id
      * @return 数据集合
      */
-    List<SdbIotData> selectSdbIotDataByDeviceId(Long deviceId);
+    List<SdbIotData> findSdbIotDataByDeviceId(Long deviceId);
 
     /**
-     * TODO:查询数据
+     * 查询数据
      *
      * @param groupId 分组ID
      * @return 数据集合
      */
-    List<SdbIotData> selectSdbIotDataByGroupId(Long groupId);
+    List<SdbIotData> findSdbIotDataByGroupId(Long groupId);
+
     /**
      * 查询数据
      *
      * @param id 数据Id
      * @return 数据
      */
-    SdbIotData selectSdbIotDataById(Long id);
+    SdbIotData findSdbIotDataById(Long id);
+
+    /**
+     * 查询所有
+     *
+     * @param
+     * @return 数据集合
+     */
+    List<SdbIotData> findSdbIotDataList();
 
 }

@@ -7,13 +7,23 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="设备id" prop="deviceId">
-                <a-input v-model="queryParam.deviceId" palaceholder="请输入所属分组id" alllow-clear/>
+                <a-input v-model="queryParam.deviceId" palaceholder="请输入所属设备id" alllow-clear/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="分组id" prop="groupId">
                 <a-input v-model="queryParam.groupId" palaceholder="请输入所属分组id" alllow-clear/>
               </a-form-item>
+            </a-col>
+            <a-col :md="!advanced && 8 || 24" :sm="24">
+              <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+                <a-button type="primary" @click="handleQuery"><a-icon type="search" />查询</a-button>
+                <a-button style="margin-left: 8px" @click="resetQuery"><a-icon type="redo" />重置</a-button>
+<!--                <a @click="toggleAdvanced" style="margin-left: 8px">-->
+<!--                  {{ advanced ? '收起' : '展开' }}-->
+<!--                  <a-icon :type="advanced ? 'up' : 'down'"/>-->
+<!--                </a>-->
+              </span>
             </a-col>
           </a-row>
         </a-form>
@@ -38,7 +48,6 @@
         rowKey="id"
         :columns="columns"
         :data-source="list"
-        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :pagination="false">
         <span slot="operation" slot-scope="text, record">
           <a-divider type="vertical" v-hasPermi="['dataManager:data:remove']" />
@@ -64,7 +73,7 @@
 </template>
 
 <script>
-import { listData, exportData, delData } from '@/api/dataManager/data'
+import { listData, exportData } from '@/api/dataManager/data'
 import { listDevice } from '@/api/deviceManager/device'
 
 export default {
@@ -75,7 +84,9 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       DeviceList: null,
-    //  非单个禁用
+      // 高级搜索
+      advanced: false,
+      //  非单个禁用
       single: true,
     //  非多个禁用
       multiple: true,
@@ -224,27 +235,6 @@ export default {
       this.ids = this.selectedRows.map(item => item.id)
       this.single = selectedRowKeys.length !== 1
       this.multiple = !selectedRowKeys.length
-    },
-    /** 删除按钮操作 */
-    handleDelete (row) {
-      var that = this
-      const ids = row.id || this.ids
-      this.$confirm({
-        title: '确认删除所选中数据?',
-        content: '当前选中编号为' + ids + '的数据',
-        onOk () {
-          return delData(ids)
-            .then(() => {
-              that.onSelectChange([], [])
-              that.getList()
-              that.$message.success(
-                '删除成功',
-                3
-              )
-            })
-        },
-        onCancel () {}
-      })
     },
     /** 导出按钮操作 */
     handleExport () {
