@@ -11,13 +11,15 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="模板id" prop="profileId">
-                <a-input v-model="queryParam.profileId" placeholder="请输入模板id" allow-clear/>
+              <a-form-item label="模板名称" prop="profileId">
+                <a-select v-model="queryParam.profileId" palaceholder="请选择模板" allow-clear>
+                  <a-select-option v-for="(d,index) in profileList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
-                <a-form-item label="所属分组id" prop="groupId">
+                <a-form-item label="所属分组名称" prop="groupId">
                   <a-input v-model="queryParam.groupId" placeholder="请输入所属分组id" allow-clear/>
                 </a-form-item>
               </a-col>
@@ -115,6 +117,8 @@
 
 <script>
 import { listDevice, delDevice, exportDevice } from '@/api/deviceManager/device'
+import { listProfile } from '@/api/profileManager/profile'
+import { listGroup } from '@/api/groupManager/group'
 import CreateForm from './modules/CreateForm'
 
 export default {
@@ -127,6 +131,8 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      profileList: null,
+      groupList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -141,6 +147,13 @@ export default {
       // 储存类型字典
       mulitOptions: [],
       // 查询参数
+      queryProfile: {
+        profileId: null,
+        profileName: null
+      },
+      queryGroup: {
+
+      },
       queryParam: {
         name: null,
         profileId: null,
@@ -150,12 +163,6 @@ export default {
         pageSize: 10
       },
       columns: [
-        // {
-        //   title: 'id',
-        //   dataIndex: 'id',
-        //   ellipsis: true,
-        //   align: 'center'
-        // },
         {
           title: '设备名称',
           dataIndex: 'name',
@@ -163,13 +170,13 @@ export default {
           align: 'center'
         },
         {
-          title: '模板id',
+          title: '模板名称',
           dataIndex: 'profileId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '所属分组id',
+          title: '分组名称',
           dataIndex: 'groupId',
           ellipsis: true,
           align: 'center'
@@ -225,7 +232,47 @@ export default {
       this.loading = true
       listDevice(this.queryParam).then(response => {
         this.list = response.rows
+        listProfile(this.queryProfile).then(response => {
+          this.profileList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.profileList.length; j++) {
+              if (this.list[i].profileId === this.profileList[j].id) {
+                this.list[i].profileId = this.profileList[j].name
+              }
+            }
+          }
+        })
+        listGroup(this.queryGroup).then(response => {
+          this.groupList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.groupList.length; j++) {
+              if (this.list[i].groupId === this.groupList[j].id) {
+                this.list[i].groupId = this.groupList[j].name
+              }
+            }
+          }
+        })
         this.total = response.total
+        listProfile(this.queryProfile).then(response => {
+          this.profileList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.profileList.length; j++) {
+              if (this.list[i].profileId === this.profileList[j].id) {
+                this.list[i].profileId = this.profileList[j].name
+              }
+            }
+          }
+        })
+        listGroup(this.queryGroup).then(response => {
+          this.groupList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.groupList.length; j++) {
+              if (this.list[i].groupId === this.groupList[j].id) {
+                this.list[i].groupId = this.groupList[j].name
+              }
+            }
+          }
+        })
         this.loading = false
       })
     },

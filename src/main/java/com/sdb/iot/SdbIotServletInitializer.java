@@ -6,11 +6,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 /**
  * web容器中进行部署
  */
-public class SdbErpServletInitializer extends SpringBootServletInitializer
+public class SdbIotServletInitializer extends SpringBootServletInitializer
 {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
     {
-        return application.sources(SdbErpApplication.class);
+        return application.sources(SdbIotApplication.class);
     }
 }

@@ -26,9 +26,9 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driver:remove']">
-          <a-icon type="delete" />删除
-        </a-button>
+<!--        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driver:remove']">-->
+<!--          <a-icon type="delete" />删除-->
+<!--        </a-button>-->
         <a-button type="primary" @click="handleExport" v-hasPermi="['driverManager:driver:export']">
           <a-icon type="download" />导出
         </a-button>
@@ -57,12 +57,6 @@
         </span>
         <span slot="createDate" slot-scope="text, record">
           {{ parseTime(record.createDate) }}
-        </span>
-        <span slot="operation" slot-scope="text, record">
-          <a-divider type="vertical" v-hasPermi="['driverManager:driver:remove']" />
-          <a @click="handleDelete(record)" v-hasPermi="['driverManager:driver:remove']">
-            <a-icon type="delete" />删除
-          </a>
         </span>
       </a-table>
       <!-- 分页 -->

@@ -6,8 +6,10 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="驱动名称" prop="driverId">
+                <a-select v-model="queryParam.driverId">
+                  <a-select-option v-for="(d,index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -64,9 +66,9 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:pointInfo:remove']">
-          <a-icon type="delete" />删除
-        </a-button>
+<!--        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:pointInfo:remove']">-->
+<!--          <a-icon type="delete" />删除-->
+<!--        </a-button>-->
         <a-button type="primary" @click="handleExport" v-hasPermi="['driverManager:pointInfo:export']">
           <a-icon type="download" />导出
         </a-button>
@@ -90,7 +92,7 @@
         <span slot="type" slot-scope="text, record">
           {{ typeFormat(record) }}
         </span>
-        <span slot="createTime" slot-scope="text, record">
+        <span slot="createTime" slot-scope="text, record" >
           {{ parseTime(record.createTime) }}
         </span>
         <span slot="modifyTime" slot-scope="text, record">
@@ -121,7 +123,7 @@
 
 <script>
 import { listPointInfo, delPointInfo, exportPointInfo } from '@/api/driverManager/pointInfo'
-// import CreateForm from './modules/CreateForm'
+import { listDriver } from '@/api/driverManager/driver'
 
 export default {
   name: 'PointInfo',
@@ -132,6 +134,8 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // driver
+      driverList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -164,7 +168,7 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '驱动id',
+          title: '驱动',
           dataIndex: 'driverId',
           ellipsis: true,
           align: 'center'
@@ -213,14 +217,14 @@ export default {
           scopedSlots: { customRender: 'modifyTime' },
           ellipsis: true,
           align: 'center'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          width: '18%',
-          scopedSlots: { customRender: 'operation' },
-          align: 'center'
         }
+        // {
+        //   title: '操作',
+        //   dataIndex: 'operation',
+        //   width: '18%',
+        //   scopedSlots: { customRender: 'operation' },
+        //   align: 'center'
+        // }
       ]
     }
   },
@@ -243,6 +247,16 @@ export default {
       listPointInfo(this.queryParam).then(response => {
         this.list = response.rows
         this.total = response.total
+        listDriver(this.query).then(response => {
+          this.driverList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.driverList.length; j++) {
+              if (this.list[i].driverId === this.driverList[j].id) {
+                this.list[i].driverId = this.driverList[j].name
+              }
+            }
+          }
+        })
         this.loading = false
       })
     },

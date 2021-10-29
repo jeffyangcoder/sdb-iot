@@ -8,6 +8,8 @@ import com.sdb.iot.deviceManager.mapper.sdbIotDevicePointMapper;
 import com.sdb.iot.deviceManager.domain.sdbIotDevicePoint;
 import com.sdb.iot.deviceManager.service.IsdbIotDevicePointService;
 
+import javax.annotation.Resource;
+
 /**
  * 位号配置Service业务层处理
  * 
@@ -17,7 +19,7 @@ import com.sdb.iot.deviceManager.service.IsdbIotDevicePointService;
 @Service
 public class sdbIotDevicePointServiceImpl implements IsdbIotDevicePointService 
 {
-    @Autowired
+    @Resource
     private sdbIotDevicePointMapper sdbIotDevicePointMapper;
 
     /**

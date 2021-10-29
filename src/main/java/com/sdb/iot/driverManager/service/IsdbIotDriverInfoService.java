@@ -7,7 +7,7 @@ import com.sdb.iot.driverManager.domain.sdbIotDriverInfo;
  * 驱动配置Service接口
  * 
  * @author sdb
- * @date 2021-10-18
+ * @date 2021-10-21
  */
 public interface IsdbIotDriverInfoService 
 {

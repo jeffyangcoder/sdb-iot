@@ -6,8 +6,10 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="驱动名称" prop="driverId">
+                <a-select aria-placeholder="请选择驱动" v-model="queryParam.driverId" style="width: 100%" allow-clear>
+                  <a-select-option v-for="(d, index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -37,9 +39,9 @@
       </div>
       <!-- 操作 -->
       <div class="table-operations">
-        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driverAttribute:remove']">
-          <a-icon type="delete" />删除
-        </a-button>
+<!--        <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driverAttribute:remove']">-->
+<!--          <a-icon type="delete" />删除-->
+<!--        </a-button>-->
         <a-button type="primary" @click="handleExport" v-hasPermi="['driverManager:driverAttribute:export']">
           <a-icon type="download" />导出
         </a-button>
@@ -69,12 +71,6 @@
         <span slot="modifyTime" slot-scope="text, record">
           {{ parseTime(record.modifyTime) }}
         </span>
-        <span slot="operation" slot-scope="text, record">
-          <a-divider type="vertical" v-hasPermi="['driverManager:driverAttribute:remove']" />
-          <a @click="handleDelete(record)" v-hasPermi="['driverManager:driverAttribute:remove']">
-            <a-icon type="delete" />删除
-          </a>
-        </span>
       </a-table>
       <!-- 分页 -->
       <a-pagination
@@ -94,7 +90,7 @@
 
 <script>
 import { listDriverAttribute, delDriverAttribute, exportDriverAttribute } from '@/api/driverManager/driverAttribute'
-// import CreateForm from './modules/CreateForm'
+import { listDriver } from '@/api/driverManager/driver'
 
 export default {
   name: 'DriverAttribute',
@@ -105,6 +101,8 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // 驱动数据
+      driverList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -117,6 +115,10 @@ export default {
       // 类型字典
       typeOptions: [],
       // 查询参数
+      query: {
+        driverId: null,
+        driverName: null
+      },
       queryParam: {
         driverId: null,
         name: null,
@@ -132,7 +134,7 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '驱动id',
+          title: '驱动名称',
           dataIndex: 'driverId',
           ellipsis: true,
           align: 'center'
@@ -212,12 +214,26 @@ export default {
         this.list = response.rows
         this.total = response.total
         this.loading = false
+        // 将driver的数据中的driverId改掉
+        listDriver(this.query).then(response => {
+          this.driverList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            // console.log(i + 'i')
+            for (let j = 0; j < this.driverList.length; j++) {
+              // console.log(this.driverList[0].id)
+              if (this.list[i].driverId === this.driverList[j].id) {
+                this.list[i].driverId = this.driverList[j].name
+              }
+            }
+          }
+        })
       })
     },
     // 类型字典翻译
     typeFormat (row, column) {
       return this.selectDictLabel(this.typeOptions, row.type)
     },
+
     /** 搜索按钮操作 */
     handleQuery () {
       this.queryParam.pageNum = 1

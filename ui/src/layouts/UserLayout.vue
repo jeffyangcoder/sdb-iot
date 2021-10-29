@@ -27,7 +27,7 @@
         </div>
         <div class="copyright">
 <!--          Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">sdb-iot</a>-->
-          Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">云仓库管理</a>
+          Copyright &copy; 2021 <a href="https://github.com/fuzui/RuoYi-Antdv" target="_blank">物联网管理</a>
         </div>
       </div>
     </div>

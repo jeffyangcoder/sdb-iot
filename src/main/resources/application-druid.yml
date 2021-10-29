@@ -55,3 +55,7 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+    data:
+        mongodb:
+            host: localhost
+            database: sdb-iot

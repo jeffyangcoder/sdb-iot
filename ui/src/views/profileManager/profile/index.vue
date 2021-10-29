@@ -11,8 +11,10 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverId">
-                <a-input v-model="queryParam.driverId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="驱动名称" prop="driverId">
+                <a-select aria-placeholder="请选择驱动" v-model="queryParam.driverId" >
+                  <a-select-option v-for="(d, index) in driverList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -97,6 +99,7 @@
 <script>
 import { listProfile, delProfile, exportProfile } from '@/api/profileManager/profile'
 import CreateForm from './modules/CreateForm'
+import { listDriver } from '@/api/driverManager/driver'
 
 export default {
   name: 'Profile',
@@ -108,6 +111,8 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // driver
+      driverList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -120,6 +125,10 @@ export default {
       // 公/私有字典
       shareOptions: [],
       // 查询参数
+      query: {
+        driverId: null,
+        driverName: null
+      },
       queryParam: {
         name: null,
         driverId: null,
@@ -147,7 +156,7 @@ export default {
           align: 'center'
         },
         {
-          title: '驱动id',
+          title: '驱动名称',
           dataIndex: 'driverId',
           ellipsis: true,
           align: 'center'
@@ -193,6 +202,16 @@ export default {
       this.loading = true
       listProfile(this.queryParam).then(response => {
         this.list = response.rows
+        listDriver(this.query).then(response => {
+          this.driverList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.driverList.length; j++) {
+              if (this.list[i].driverId === this.driverList[j].id) {
+                this.list[i].driverId = this.driverList[j].name
+              }
+            }
+          }
+        })
         this.total = response.total
         this.loading = false
       })

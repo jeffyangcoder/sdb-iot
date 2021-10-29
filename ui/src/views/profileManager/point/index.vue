@@ -6,8 +6,8 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="模板id" prop="profileId">
-                <a-input v-model="queryParam.profileId" placeholder="请输入模板id" allow-clear/>
+              <a-form-item label="模板名称" prop="profileId">
+                <a-input v-model="queryParam.profileId" placeholder="请输入模板名称" allow-clear/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -135,6 +135,7 @@
 <script>
 import { listPoint, delPoint, exportPoint } from '@/api/profileManager/point'
 import CreateForm from './modules/CreateForm'
+import { listProfile } from '@/api/profileManager/profile'
 
 export default {
   name: 'Point',
@@ -146,6 +147,7 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      profileList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -162,6 +164,10 @@ export default {
       // 累计标识字典
       accrueOptions: [],
       // 查询参数
+      query: {
+        profileId: null,
+        profileName: null
+      },
       queryParam: {
         profileId: null,
         value: null,
@@ -179,7 +185,7 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '模板id',
+          title: '模板名称',
           dataIndex: 'profileId',
           ellipsis: true,
           align: 'center'
@@ -275,6 +281,7 @@ export default {
   },
   created () {
     this.getList()
+    this.getName()
     this.getDicts('sdb_iot_attribute_type').then(response => {
       this.typeOptions = response.data
     })
@@ -295,9 +302,22 @@ export default {
       this.loading = true
       listPoint(this.queryParam).then(response => {
         this.list = response.rows
+        listProfile(this.query).then(response => {
+          this.profileList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.profileList.length; j++) {
+              if (this.list[i].profileId === this.profileList[j].id) {
+                this.list[i].profileId = this.profileList[j].name
+              }
+            }
+          }
+        })
         this.total = response.total
         this.loading = false
       })
+    },
+    getName () {
+      console.log(this.total)
     },
     // 类型字典翻译
     typeFormat (row, column) {

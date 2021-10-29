@@ -6,16 +6,20 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="驱动id" prop="driverAttributeId">
-                <a-input v-model="queryParam.driverAttributeId" placeholder="请输入驱动id" allow-clear/>
+              <a-form-item label="模板" prop="driverId">
+                <a-select v-model="queryParam.profileId" >
+                  <a-select-option v-for="(d,index) in profileList" :key="index" :value="d.id">{{ d.name }}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="配置名称" prop="driverAttributeId">
+                <a-select v-model="queryParam.driverAttributeId" >
+                  <a-select-option v-for="(d,index) in driverAttributeList" :key="index" :value="d.id">{{ d.driverId + ' ' + d.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-item label="内容值" prop="value">
-                  <a-input v-model="queryParam.value" placeholder="请输入内容值" allow-clear/>
-                </a-form-item>
-              </a-col>
             </template>
             <a-col :md="!advanced && 8 || 24" :sm="24">
               <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
@@ -35,9 +39,9 @@
         <a-button type="primary" @click="$refs.createForm.handleAdd()" v-hasPermi="['driverManager:driverInfo:add']">
           <a-icon type="plus" />新增
         </a-button>
-        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['driverManager:driverInfo:edit']">
-          <a-icon type="edit" />修改
-        </a-button>
+<!--        <a-button type="primary" :disabled="single" @click="$refs.createForm.handleUpdate(undefined, ids)" v-hasPermi="['driverManager:driverInfo:edit']">-->
+<!--          <a-icon type="edit" />修改-->
+<!--        </a-button>-->
         <a-button type="danger" :disabled="multiple" @click="handleDelete" v-hasPermi="['driverManager:driverInfo:remove']">
           <a-icon type="delete" />删除
         </a-button>
@@ -66,7 +70,7 @@
         :data-source="list"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :pagination="false">
-        <span slot="createTime" slot-scope="text, record">
+        <span slot="createTime" slot-scope="text, record" >
           {{ parseTime(record.createTime) }}
         </span>
         <span slot="modifyTime" slot-scope="text, record">
@@ -101,6 +105,9 @@
 
 <script>
 import { listDriverInfo, delDriverInfo, exportDriverInfo } from '@/api/driverManager/driverInfo'
+import { listProfile } from '@/api/profileManager/profile'
+import { listDriverAttribute } from '@/api/driverManager/driverAttribute'
+import { listDriver } from '@/api/driverManager/driver'
 import CreateForm from './modules/CreateForm'
 
 export default {
@@ -113,6 +120,12 @@ export default {
       list: [],
       selectedRowKeys: [],
       selectedRows: [],
+      // 模板数据
+      profileList: null,
+      // 驱动数据
+      driverList: null,
+      // 驱动配置数据
+      driverAttributeList: null,
       // 高级搜索 展开/关闭
       advanced: false,
       // 非单个禁用
@@ -123,10 +136,22 @@ export default {
       loading: false,
       total: 0,
       // 查询参数
+      query: {
+        driverId: null,
+        driverName: null
+      },
+      query1: {
+        driverAttributeId: null,
+        driverAttributeName: null
+      },
+      query2: {
+        profileId: null,
+        profileName: null
+      },
       queryParam: {
+        driverId: null,
         driverAttributeId: null,
         profileId: null,
-        value: null,
         pageNum: 1,
         pageSize: 10
       },
@@ -138,13 +163,19 @@ export default {
         //   align: 'center'
         // },
         {
-          title: '驱动id',
+          title: '驱动',
+          dataIndex: 'driverId',
+          ellipsis: true,
+          align: 'center'
+        },
+        {
+          title: '配置名称',
           dataIndex: 'driverAttributeId',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '模板id',
+          title: '模板名称',
           dataIndex: 'profileId',
           ellipsis: true,
           align: 'center'
@@ -202,6 +233,37 @@ export default {
         this.list = response.rows
         this.total = response.total
         this.loading = false
+        listDriver(this.query).then(response => {
+          this.driverList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.driverList.length; j++) {
+              if (this.list[i].driverId === this.driverList[j].id) {
+                this.list[i].driverId = this.driverList[j].name
+              }
+            }
+          }
+        })
+        listDriverAttribute(this.query2).then(response => {
+          this.driverAttributeList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            for (let j = 0; j < this.driverAttributeList.length; j++) {
+              if (this.list[i].driverAttributeId === this.driverAttributeList[j].id) {
+                this.list[i].driverAttributeId = this.driverAttributeList[j].name
+              }
+            }
+          }
+        })
+        listProfile(this.query1).then(response => {
+          this.profileList = response.rows
+          for (let i = 0; i < this.list.length; i++) {
+            // console.log(i + 'i')
+            for (let j = 0; j < this.profileList.length; j++) {
+              if (this.list[i].profileId === this.profileList[j].id) {
+                this.list[i].profileId = this.profileList[j].name
+              }
+            }
+          }
+        })
       })
     },
     /** 搜索按钮操作 */
@@ -212,9 +274,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery () {
       this.queryParam = {
+        driverId: undefined,
         driverAttributeId: undefined,
         profileId: undefined,
-        value: undefined,
         pageNum: 1,
         pageSize: 10
       }

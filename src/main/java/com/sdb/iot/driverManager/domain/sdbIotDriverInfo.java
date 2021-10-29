@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * 驱动配置对象 sdb_iot_driver_info
  * 
  * @author sdb
- * @date 2021-10-18
+ * @date 2021-10-21
  */
 public class sdbIotDriverInfo extends BaseEntity
 {
@@ -22,6 +22,10 @@ public class sdbIotDriverInfo extends BaseEntity
 
     /** 驱动id */
     @Excel(name = "驱动id")
+    private Long driverId;
+
+    /** 驱动配置id */
+    @Excel(name = "驱动配置id")
     private Long driverAttributeId;
 
     /** 模板id */
@@ -49,6 +53,15 @@ public class sdbIotDriverInfo extends BaseEntity
     public Long getId() 
     {
         return id;
+    }
+    public void setDriverId(Long driverId) 
+    {
+        this.driverId = driverId;
+    }
+
+    public Long getDriverId() 
+    {
+        return driverId;
     }
     public void setDriverAttributeId(Long driverAttributeId) 
     {
@@ -100,6 +113,7 @@ public class sdbIotDriverInfo extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
+            .append("driverId", getDriverId())
             .append("driverAttributeId", getDriverAttributeId())
             .append("profileId", getProfileId())
             .append("value", getValue())
