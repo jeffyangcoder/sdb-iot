@@ -121,6 +121,10 @@ export default {
       // 贡献者
       contributors: [
         {
+          name: '软件需求分析实验室',
+          email: '111@qq.com'
+        },
+        {
           name: '杨仕炜',
           email: '872802292@qq.com'
         },

@@ -117,7 +117,7 @@ const vueConfig = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: `https://ruoyi.setworld.net`,
-        target: `http://127.0.0.1:8080`,
+        target: `http://192.168.0.2:9000`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
